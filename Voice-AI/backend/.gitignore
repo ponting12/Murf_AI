@@ -1,0 +1,7 @@
+*.egg-info
+.pytest_cache
+.ruff_cache
+__pycache__/
+order.json
+livekit-server.exe
+livekit.zip
