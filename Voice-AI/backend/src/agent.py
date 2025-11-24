@@ -1,5 +1,6 @@
 import logging
 import json
+import os
 
 from dotenv import load_dotenv
 from livekit.agents import (
@@ -16,13 +17,27 @@ from livekit.agents import (
     function_tool,
     RunContext,
 )
-from livekit.plugins import murf, silero, deepgram, noise_cancellation, openai
+from livekit.plugins import murf, silero, deepgram, openai
+import livekit.plugins.noise_cancellation as noise_cancellation
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 # Load environment variables
-load_dotenv(".env.local")
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.local")
+load_dotenv(env_path)
 
 logger = logging.getLogger("agent")
+
+# Environment variable validation
+required_vars = ["LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET"]
+dummy_detected = False
+for var in required_vars:
+    if var not in os.environ or os.environ.get(var, "").startswith("dummy_"):
+        dummy_detected = True
+        logger.error(f"Environment variable {var} is missing or set to dummy value.")
+if dummy_detected:
+    logger.error("LIVEKIT environment variables are not properly configured. Please set LIVEKIT_URL, LIVEKIT_API_KEY, and LIVEKIT_API_SECRET in your .env.local or environment.")
+    import sys
+    sys.exit(1)
 
 class Assistant(Agent):
     def __init__(self) -> None:

@@ -1,7 +1,7 @@
 import pytest
 from livekit.agents import AgentSession, inference, llm
 
-from agent import Assistant
+from src.agent import Assistant
 
 
 def _llm() -> llm.LLM:
